@@ -4,7 +4,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.santi.pmdm.virgen.dogapicleanarchitecture.domain.models.Dog
+import com.santi.pmdm.virgen.dogapicleanarchitecture.domain.usercase.DeleteDogUseCase
 import com.santi.pmdm.virgen.dogapicleanarchitecture.domain.usercase.DeleteDogsFromDataBaseUseCase
+import com.santi.pmdm.virgen.dogapicleanarchitecture.domain.usercase.GetDogByPosUseCase
 import com.santi.pmdm.virgen.dogapicleanarchitecture.domain.usercase.GetDogsBreedUseCase
 import com.santi.pmdm.virgen.dogapicleanarchitecture.domain.usercase.GetDogsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,7 +15,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import javax.inject.Provider
 
 /*
 * Autor: santiago rodenas herráiz
@@ -45,7 +46,9 @@ cuando se llame al método get del provider. De esta forma, aseguramos que se cu
 class DogViewModel @Inject constructor(
     private val useCaseList : GetDogsUseCase,
     private val getDogsBreedUseCase: GetDogsBreedUseCase,
-    private val userCaseDeleteDatabase : DeleteDogsFromDataBaseUseCase
+    private val userCaseDeleteDatabase : DeleteDogsFromDataBaseUseCase,
+    private val deleteDogUseCase : DeleteDogUseCase,
+    private val getDogByPosUseCase : GetDogByPosUseCase
 
 ): ViewModel() {
 
@@ -114,4 +117,28 @@ class DogViewModel @Inject constructor(
         }
     }
 
+    fun delByBreed(pos: Int) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                getDogForPosition(pos)?.let {
+                    deleteDogUseCase(it.breed)
+                }
+            }
+            val updatedList = dogListLiveData.value?.toMutableList()
+            updatedList?.removeAt(pos)
+            dogListLiveData.value = updatedList ?: emptyList()
+            if (updatedList.isNullOrEmpty()) {
+                getDogsBreedUseCase()
+                list()
+            }
+        }
+    }
+
+    suspend fun getDogForPosition(pos: Int) : Dog? {
+        val dog = getDogByPosUseCase(pos)
+        dog?.let {
+            return dog
+        }
+        return null
+    }
 }

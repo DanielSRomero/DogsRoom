@@ -19,5 +19,7 @@ interface DogRepositoryInterface {
 
     suspend fun deleteDatabase()
 
-    suspend fun deleteDog(pos:Int)
+    suspend fun deleteDog(breed: String)
+
+    suspend fun getDogBreedByPos(pos: Int): Dog?
 }

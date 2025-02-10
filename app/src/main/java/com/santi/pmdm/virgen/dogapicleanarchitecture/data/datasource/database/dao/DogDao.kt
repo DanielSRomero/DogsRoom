@@ -53,7 +53,7 @@ interface DogDao {
     @Query ("DELETE FROM dogentity")
     suspend fun deleteAll()
 
-
-    abstract fun deleteDog(pos: Int)
+    @Query ("DELETE FROM dogentity WHERE breed = :breed")
+    suspend fun deleteDogByBreed(breed: String)
 
 }

@@ -136,10 +136,8 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
         adapter = DogAdapter { pos -> delDog(pos) }
     }
 
-    private fun delDog(pos: Int) {
-        binding.btnDelete.setOnClickListener{
-            dogViewModel.delete()
-        }
+    private fun delDog(pos : Int) {
+        dogViewModel.delByBreed(pos)
     }
 
     /*

@@ -32,10 +32,10 @@ class ViewHDog(view: View,
         setOnClickListener(position)
     }
 
-    private fun setOnClickListener(position: Int) {
+    private fun setOnClickListener(pos: Int) {
 
         binding.btnDelete.setOnClickListener {
-            deleteOnClick(position)
+            deleteOnClick(pos)
         }
 
     }

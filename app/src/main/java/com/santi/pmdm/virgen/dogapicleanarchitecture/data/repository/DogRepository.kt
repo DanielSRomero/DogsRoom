@@ -2,6 +2,7 @@ package com.santi.pmdm.virgen.dogapicleanarchitecture.data.repository
 
 import com.santi.pmdm.virgen.dogapicleanarchitecture.data.datasource.database.dao.DogDao
 import com.santi.pmdm.virgen.dogapicleanarchitecture.data.datasource.database.entities.DogEntity
+import com.santi.pmdm.virgen.dogapicleanarchitecture.data.datasource.mem.models.Dogs
 import com.santi.pmdm.virgen.dogapicleanarchitecture.data.datasource.mem.service.DogService
 import com.santi.pmdm.virgen.dogapicleanarchitecture.domain.mapper.toDog
 import com.santi.pmdm.virgen.dogapicleanarchitecture.domain.models.Dog
@@ -67,8 +68,15 @@ class DogRepository @Inject constructor(
         dogDao.deleteAll()
     }
 
-    override suspend fun deleteDog(pos:Int) {
-        dogDao.deleteDog(pos)
+    override suspend fun deleteDog(breed: String) {
+        dogDao.deleteDogByBreed(breed)
+    }
+
+    override suspend fun getDogBreedByPos(pos: Int): Dog? {
+        return if (pos < Dogs.dogs.size)
+            Dogs.dogs.get(pos).toDog()
+        else
+            null
     }
 
 }
